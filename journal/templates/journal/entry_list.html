@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My Journal</title>
+    </head>
+    <body>
+        <h1>My Journal</h1>
+        <a href="#">New Entry</a>
+
+        {% for entry in entries %}
+            <div>
+                <h2>{{ entry.title }}</h2>
+                <p>{{ entry.created_at }}</p>
+            </div>
+        {% empty %}
+            <p>No entries yet.</p>
+        {% endfor %}
+    </body>
+</html>
