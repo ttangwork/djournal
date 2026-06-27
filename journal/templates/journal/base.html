@@ -1,20 +1,29 @@
-  <!DOCTYPE html>
-  <html>
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>{% block title %}My Journal{% endblock %}</title>
-      <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-gray-50 min-h-screen">
-      <nav class="bg-white shadow mb-8 px-6 py-4">
-          <a href="{% url 'entry_list' %}" class="text-xl font-bold text-gray-800">My
-  Journal</a>
-          <a href="{% url 'entry_create' %}" class="ml-6 text-blue-600 hover:underline">New
-  Entry</a>
-      </nav>
-      <main class="max-w-2xl mx-auto px-4">
-          {% block content %}{% endblock %}
-      </main>
-  </body>
-  </html>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Journal{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-white shadow mb-8 px-6 py-4 flex justify-between items-center">
+        <div>
+            <a href="{% url 'entry_list' %}" class="text-xl font-bold text-gray-800">My Journal</a>
+            <a href="{% url 'entry_create' %}" class="ml-6 text-blue-600 hover:underline">New Entry</a>
+        </div>
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="text-gray-500 hover:underline text-sm">Logout</button>
+        </form>
+        {% endif %}
+    </nav>
+    <main class="max-w-2xl mx-auto px-4">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+
+</html>

@@ -1,14 +1,18 @@
 from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .models import Entry
 
+@login_required
 def entry_list(request):
     entries = Entry.objects.all().order_by('-created_at')
     return render(request, 'journal/entry_list.html', {'entries': entries})
 
+@login_required
 def entry_detail(request, pk):
     entry = get_object_or_404(Entry, pk=pk)
     return render(request, 'journal/entry_detail.html', {'entry': entry})
 
+@login_required
 def entry_create(request):
     if request.method == 'POST':
         title = request.POST['title']
@@ -17,6 +21,7 @@ def entry_create(request):
         return redirect('entry_list')
     return render(request, 'journal/entry_form.html')
 
+@login_required
 def entry_edit(request, pk):
     entry = get_object_or_404(Entry, pk=pk)
     if request.method == 'POST':
@@ -26,6 +31,7 @@ def entry_edit(request, pk):
         return redirect('entry_detail', pk=entry.pk)
     return render(request, 'journal/entry_form.html', {'entry': entry})
 
+@login_required
 def entry_delete(request, pk):
     entry = get_object_or_404(Entry, pk=pk)
     if request.method == 'POST':
