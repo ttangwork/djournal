@@ -1,11 +1,18 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from .models import Entry
 
 @login_required
 def entry_list(request):
+    query = request.GET.get('q', '')
     entries = Entry.objects.all().order_by('-created_at')
-    return render(request, 'journal/entry_list.html', {'entries': entries})
+    if query:
+        entries = entries.filter(title__icontains=query) | entries.filter(body__icontains=query)
+    paginator = Paginator(entries, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'journal/entry_list.html', {'entries': page_obj, 'query': query})
 
 @login_required
 def entry_detail(request, pk):

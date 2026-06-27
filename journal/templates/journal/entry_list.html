@@ -3,15 +3,38 @@
 {% block title %}My Journal{% endblock %}
 
 {% block content %}
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">My Journal</h1>
-    {% for entry in entries %}
-        <div class="bg-white rounded shadow p-4 mb-4">
-            <h2 class="text-xl font-semibold">
-                <a href="{% url 'entry_detail' entry.pk %}" class="text-blue-600 hover:underline">{{ entry.title }}</a>
-            </h2>
-            <p class="text-gray-400 text-sm mt-1">{{ entry.created_at|date:"F j, Y" }}</p>
-        </div>
-    {% empty %}
-        <p class="text-gray-500">No entries yet.</p>
-    {% endfor %}
+<h1 class="text-3xl font-bold text-gray-800 mb-6">My Journal</h1>
+<form method="get" class="mb-6">
+    <div class="flex gap-2">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search entries..."
+            class="flex-1 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Search</button>
+        {% if query %}
+        <a href="{% url 'entry_list' %}" class="px-4 py-2 text-gray-500 hover:underline">Clear</a>
+        {% endif %}
+    </div>
+</form>
+{% for entry in entries %}
+<div class="bg-white rounded shadow p-4 mb-4">
+    <h2 class="text-xl font-semibold">
+        <a href="{% url 'entry_detail' entry.pk %}" class="text-blue-600 hover:underline">{{ entry.title }}</a>
+    </h2>
+    <p class="text-gray-400 text-sm mt-1">{{ entry.created_at|date:"F j, Y" }}</p>
+</div>
+{% empty %}
+<p class="text-gray-500">No entries yet.</p>
+{% endfor %}
+{% if entries.has_other_pages %}
+    <div class="flex justify-center gap-2 mt-6">
+        {% if entries.has_previous %}
+            <a href="?page={{ entries.previous_page_number }}{% if query %}&q={{ query }}{% endif %}"
+                class="px-3 py-1 border rounded text-gray-600 hover:bg-gray-100">Previous</a>
+        {% endif %}
+        <span class="px-3 py-1 text-gray-500">Page {{ entries.number }} of {{ entries.paginator.num_pages }}</span>
+        {% if entries.has_next %}
+            <a href="?page={{ entries.next_page_number }}{% if query %}&q={{ query }}{% endif %}"
+                class="px-3 py-1 border rounded text-gray-600 hover:bg-gray-100">Next</a>
+        {% endif %}
+    </div>
+{% endif %}
 {% endblock %}
